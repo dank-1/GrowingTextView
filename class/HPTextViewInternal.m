@@ -103,6 +103,11 @@
     [super drawRect:rect];
     if (self.displayPlaceHolder && self.placeholder && self.placeholderColor)
     {
+        // パラグラフで文字の描画位置などを指定する
+        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        style.lineBreakMode = NSLineBreakByWordWrapping;
+        style.alignment = self.textAlignment;
+        
         if ([self respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)])
         {
             NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -110,8 +115,16 @@
             [self.placeholder drawInRect:CGRectMake(5, 8 + self.contentInset.top, self.frame.size.width-self.contentInset.left, self.frame.size.height- self.contentInset.top) withAttributes:@{NSFontAttributeName:self.font, NSForegroundColorAttributeName:self.placeholderColor, NSParagraphStyleAttributeName:paragraphStyle}];
         }
         else {
-            [self.placeholderColor set];
-            [self.placeholder drawInRect:CGRectMake(8.0f, 8.0f, self.frame.size.width - 16.0f, self.frame.size.height - 16.0f) withFont:self.font];
+//            [self.placeholderColor set];
+//            [self.placeholder drawInRect:CGRectMake(8.0f, 8.0f, self.frame.size.width - 16.0f, self.frame.size.height - 16.0f) withFont:self.font];
+            NSDictionary *attributes = @{
+                                         NSForegroundColorAttributeName : self.placeholderColor,
+                                         NSFontAttributeName : self.font,
+                                         NSParagraphStyleAttributeName : style
+                                         };
+            // text を描画する
+            [self.placeholder drawInRect:CGRectMake(8.0f, 8.0f, self.frame.size.width - 16.0f, self.frame.size.height - 16.0f)
+                          withAttributes:attributes];
         }
     }
 }
